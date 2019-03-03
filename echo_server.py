@@ -4,26 +4,22 @@ import socket
 server_addres = ('127.0.0.1',1024)
 
 
-fst_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-host = socket.gethostname()
-port = 1024
-fst_socket.bind(server_addres)
-fst_socket.listen(5)
+server.bind(server_addres)
+server.listen(5)
 
-print ("serv addr:", server_addres)
+print ("Serv addr:", server_addres)
+
+#inputs = [server]
+#outputs = []
+#messege_queues = {}
+
+connection, addr = server.accept()
 
 while True:
-    (clientsocket, addres) = fst_socket.accept()
-    ct = client_thread(clientsocket)
-    ct.run()
-    try:
-        while True:
-            data = connection.recv(16)
-            print ("received:", data)
-            if data:
-                connection.sendall(data)
-            else:
-                break
-    finally:
-        connection.close()
+    data = connection.recv(1024)
+    if not data:
+        break
+    connection.sendall(data)
+connection.close()
