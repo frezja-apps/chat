@@ -6,7 +6,7 @@ server_addres = ('127.0.0.1',1024)
 
 
 server.bind(server_addres)
-server.settimeout(5)
+#server.settimeout(25)
 server.listen(5)
 
 print ("Serv addr:", server_addres)
@@ -24,3 +24,4 @@ while True:
         break
     connection.sendall(data)
 connection.close()
+print ("Connection ended")
