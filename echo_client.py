@@ -16,12 +16,16 @@ print("Connected to:", server_addres)
 #data = sock.recv(1024)
 #print ("Received message: {}".format(data.decode()))
 
+
 while True:
-    msg = (input("Input message: ")).encode()
-    sock.send(msg)
-    data = sock.recv(1024)
-    print ("Received message: {}".format(data.decode()))
-    if not msg:
+    msg = (input("Input message or type /quit to disconnect: ")).encode()
+    if msg != ("/quit".encode()):
+        sock.send(msg)
+        data = sock.recv(1024)
+        print ("Received message: {}".format(data.decode()))
+    else:
+        print ("Quitting...")
         break
-        sock.close()
+
+sock.close()
 print ("Connection closed")

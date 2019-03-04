@@ -16,11 +16,12 @@ print ("Serv addr:", server_addres)
 #messege_queues = {}
 
 connection, addr = server.accept()
+print ("Connection from: ",addr)
 
 while True:
     data = connection.recv(1024)
     print (data.decode())
-    if not data:
+    if not data or data == "q":
         break
     connection.sendall(data)
 connection.close()
