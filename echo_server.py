@@ -2,14 +2,14 @@ import socketserver
 import socket
 
 server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-server_addres = ('127.0.0.1',1024)
+server_address = ('127.0.0.1',1024)
 
 
-server.bind(server_addres)
+server.bind(server_address)
 #server.settimeout(25)
 server.listen(5)
 
-print ("Serv addr:", server_addres)
+print ("Serv addr:", server_address)
 
 #inputs = [server]
 #outputs = []
