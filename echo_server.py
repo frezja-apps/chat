@@ -1,13 +1,23 @@
 import socketserver
 import socket
+import threading
+import _thread
 
-server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-server_address = ('127.0.0.1',1024)
+server_addres = ('127.0.0.1',1024)
 
+thr_lock = threading.Lock()
 
-server.bind(server_address)
-#server.settimeout(25)
-server.listen(5)
+def threads(co):
+    while True:
+        data = connection.recv(1024)
+        print ("Message:",data.decode())
+        if not data:
+            thr_lock.release()
+            break
+
+        connection.sendall(data)
+    connection.close()
+    print ("Connection close")
 
 print ("Serv addr:", server_address)
 
@@ -15,14 +25,22 @@ print ("Serv addr:", server_address)
 #outputs = []
 #messege_queues = {}
 
-connection, addr = server.accept()
-print("Connection from:",addr)
+server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
+server.bind(server_addres)
+server.listen(5)
 
 while True:
-    data = connection.recv(1024)
-    print ("Received message:",data.decode())
-    if not data:
-        break
-    connection.sendall(data)
+    connection, addr = server.accept()
+    thr_lock.acquire()
+    print("Connected to:",addr)
+    start_new_thread(threads,(co,))
+    #while True:
+    #    data = connection.recv(1024)
+    #    print ("Message:",data.decode())
+    #    if not data:
+    #        thr_lock.release()
+    #        break
+    #    connection.sendall(data)
 connection.close()
-print ("Connection ended")
+print ("Connection close")
