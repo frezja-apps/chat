@@ -11,8 +11,15 @@ print (sys.stderr, 'connecting to %s port %s' % server_addres)
 sock.connect(server_addres)
 print("Connected to:", server_addres)
 
-sock.sendall('Some message'.encode())
-data = sock.recv(1024)
+while True:
+    msg = input("Input message or type /quit to disconnect: ")
+    if msg != "/quit":
+        sock.send(msg.encode())
+        data = sock.recv(1024)
+        print ("Received message: {}".format(data.decode()))
+    else:
+        print ("Quitting...")
+        break
+
 sock.close()
-print ("Received: {}".format(data.decode()))
 print ("Connection closed")
