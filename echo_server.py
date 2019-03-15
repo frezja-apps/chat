@@ -13,6 +13,7 @@ inputs = [server]
 outputs = []
 message_queues = {}
 
+
 while inputs:
     rlist, wlist, elist = select.select(inputs, outputs, inputs)
     for c in rlist:
@@ -22,7 +23,7 @@ while inputs:
             connection.setblocking(0)
             inputs.append(connection)
             message_queues[connection] = queue.Queue()
-            #print ("Inp:", inputs)
+            
         else:
             data = c.recv(1024)
             print ("Message: ", data.decode())
@@ -31,7 +32,7 @@ while inputs:
                 message_queues[c].put(data)
                 if c not in outputs:
                     outputs.append(c)
-                    #print ("Out:", outputs)
+
             else:
                 if c in outputs:
                     outputs.remove(c)
@@ -54,7 +55,12 @@ while inputs:
             outputs.remove(c)
         c.close()
         del message_queues[c]
-    
+    if len(inputs) == 1 and len(outputs) == 0:
+        print ("Server closed")
+        server.close()
+        break
+
+
 
 #connection, addr = server.accept()
 #print("Connected to:",addr)
