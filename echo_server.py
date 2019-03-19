@@ -1,11 +1,12 @@
-import socketserver
-import socket, select, queue
+import socket
+import select
+import queue
 
-server_addres = ('127.0.0.1',1024)
-print ("Serv addr:", server_addres)
+server_address = ('127.0.0.1', 1024)
+print ("Serv addr:", server_address)
 
-server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-server.bind(server_addres)
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind(server_address)
 server.listen(5)
 server.setblocking(0)
 
@@ -13,20 +14,22 @@ inputs = [server]
 outputs = []
 message_queues = {}
 
+#storage = open('history', 'r+')
 
 while inputs:
     rlist, wlist, elist = select.select(inputs, outputs, inputs)
     for c in rlist:
         if c is server:
             connection, addr = c.accept()
-            print ("Connected to", addr)
+            print("Connected to", addr[1])
             connection.setblocking(0)
             inputs.append(connection)
             message_queues[connection] = queue.Queue()
-            
+            #if os.stat("history").st_size > 0:
+            #    c.send(storage.read().encode())
         else:
             data = c.recv(1024)
-            print ("Message: ", data.decode())
+            print("Message: ", data.decode())
             #c.send(data)
             if data:
                 message_queues[c].put(data)
@@ -38,7 +41,7 @@ while inputs:
                     outputs.remove(c)
                 inputs.remove(c)
                 c.close()
-                print ("Disconnect")
+                print("Disconnect")
                 del message_queues[c]
 
     for c in wlist:
@@ -48,6 +51,7 @@ while inputs:
             outputs.remove(c)
         else:
             c.send(next_msg)
+#            storage.write(next_msg.decode())
 
     for c in elist:
         inputs.remove(c)
@@ -56,7 +60,7 @@ while inputs:
         c.close()
         del message_queues[c]
     if len(inputs) == 1 and len(outputs) == 0:
-        print ("Server closed")
+        print("Server closed")
         server.close()
         break
 
