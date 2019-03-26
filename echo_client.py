@@ -5,7 +5,7 @@ import configparser
 parser = configparser.ConfigParser()
 parser.read('conf.ini')
 
-parser.get('config', 'address')
+
 
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
