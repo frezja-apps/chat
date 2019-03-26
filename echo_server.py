@@ -1,9 +1,15 @@
 import socket
 import select
 import queue
+import configparser
 
-server_address = ('127.0.0.1', 1024)
-print ("Serv addr:", server_address)
+
+parser = configparser.ConfigParser()
+parser.read('conf.ini')
+
+
+server_address = (parser.get('config', 'address'), int(parser.get('config', 'port')))
+print("Serv addr:", server_address)
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(server_address)
